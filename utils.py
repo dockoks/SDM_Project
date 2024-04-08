@@ -21,7 +21,6 @@ def join_csv_and_headers(file, header_file, dtype=None):
 
 os.makedirs('joined', exist_ok=True)
 
-
 for name in tqdm(['article', 'inproceedings', 'incollection', 'book', 'data', 'mastersthesis', 'phdthesis', 'proceedings', 'www']):
   df = join_csv_and_headers(f'dblp_{name}.csv', f'dblp_{name}_header.csv')
-  df.to_csv(f'{name}.csv')
+  df.to_csv(f'joined_{name}.csv')
