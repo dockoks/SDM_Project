@@ -1,2 +1,4 @@
 pandas
 numpy
+tqdm
+neo4j
