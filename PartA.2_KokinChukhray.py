@@ -1,7 +1,7 @@
 from neo4j import GraphDatabase
 uri = "neo4j://localhost:7687"
 username = "neo4j"
-password = "11111111"
+password = "12345678"
 driver = GraphDatabase.driver(uri, auth=(username, password))
 
 def load_constraints(query):
@@ -62,7 +62,7 @@ def load_nodes(query):
         LOAD CSV WITH HEADERS FROM 'file:///journal_nodes.csv' AS row FIELDTERMINATOR ','
         CREATE (:Journal {ID: row.id, Name: row.name})
     """)
-    #
+
     query.run("""
         LOAD CSV WITH HEADERS FROM 'file:///papers_from_journal_nodes.csv' AS row FIELDTERMINATOR ','
         CREATE (:Paper {ID: row.paper_id, Title: row.title, Keywords: row.keywords, Abstract: row.abstract})
@@ -136,31 +136,31 @@ def load_relations(query):
     """)
 
     query.run("""
-        LOAD CSV WITH HEADERS FROM 'file:///journal_CONTAINS_VOLUME_volume.csv' AS row FIELDTERMINATOR ','
-        MERGE (journal:Journal {ID: row.journal_id})
-        MERGE (volume:Volume {ID: row.volume_id})
-        MERGE (journal)-[:CONTAINS_VOLUME]->(volume)
-    """)
+         LOAD CSV WITH HEADERS FROM 'file:///journal_CONTAINS_VOLUME_volume.csv' AS row FIELDTERMINATOR ','
+         MERGE (journal:Journal {ID: row.journal_id})
+         MERGE (volume:Volume {ID: row.volume_id})
+         MERGE (journal)-[:CONTAINS_VOLUME]->(volume)
+     """)
 
     query.run("""
-        LOAD CSV WITH HEADERS FROM 'file:///proceeding_CONTAINS_CONFERENCE_edition.csv' AS row FIELDTERMINATOR ','
-        MERGE (proceeding:Proceeding {ID: row.proceeding_id})
-        MERGE (conference:Edition {ID: row.edition_id})
-        MERGE (proceeding)-[:CONTAINS_CONFERENCE]->(conference)
-    """)
+         LOAD CSV WITH HEADERS FROM 'file:///proceeding_CONTAINS_CONFERENCE_edition.csv' AS row FIELDTERMINATOR ','
+         MERGE (proceeding:Proceeding {ID: row.proceeding_id})
+         MERGE (conference:Edition {ID: row.edition_id})
+         MERGE (proceeding)-[:CONTAINS_CONFERENCE]->(conference)
+     """)
 
     query.run("""
         LOAD CSV WITH HEADERS FROM 'file:///proceeding_CONTAINS_WORKSHOP_edition.csv' AS row FIELDTERMINATOR ','
-        MERGE (proceeding:Proceeding {ID: row.proceeding_id})
-        MERGE (workshop:Edition {ID: row.edition_id})
+         MERGE (proceeding:Proceeding {ID: row.proceeding_id})
+         MERGE (workshop:Edition {ID: row.edition_id})
         MERGE (proceeding)-[:CONTAINS_WORKSHOP]->(workshop)
     """)
 
     query.run("""
-        LOAD CSV WITH HEADERS FROM 'file:///journal_HAS_EDITOR_person.csv' AS row FIELDTERMINATOR ','
-        MERGE (journal:Proceeding {ID: row.id})
-        MERGE (editor:Person {ID: row.editor_id})
-        MERGE (journal)-[:HAS_EDITOR]->(editor)
+         LOAD CSV WITH HEADERS FROM 'file:///journal_HAS_EDITOR_person.csv' AS row FIELDTERMINATOR ','
+         MERGE (journal:Proceeding {ID: row.id})
+         MERGE (editor:Person {ID: row.editor_id})
+         MERGE (journal)-[:HAS_EDITOR]->(editor)
     """)
 
     query.run("""
@@ -191,7 +191,6 @@ def load_relations(query):
         MERGE (paper1)-[:CITES]->(paper2)
     """)
 
-    # PUBLISHED
     query.run("""
         LOAD CSV WITH HEADERS FROM 'file:///paper_PUBLISHED_IN_CONFERENCE_edition_proceeding.csv' AS row FIELDTERMINATOR ','
         MERGE (paper:Paper {ID: row.paper_id})
@@ -226,7 +225,7 @@ def main():
         session.execute_write(delete_everything)
 
         # Load first all the nodes, and then all the realtions between nodes
-        # session.execute_write(load_constraints)
+        session.execute_write(load_constraints)
         session.execute_write(load_nodes)
         session.execute_write(load_relations)
     driver.close()
